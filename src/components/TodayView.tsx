@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Camera, Check, Heart, PartyPopper, Pencil, RotateCcw } from 'lucide-react';
 import { compressPhoto } from '../photoUtils';
 import './TodayView.css';
@@ -42,13 +42,32 @@ export default function TodayView({
   const [saved, setSaved] = useState<SavedSummary | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const urlsRef = useRef<Set<string>>(new Set());
+
+  useEffect(
+    () => () => {
+      for (const url of urlsRef.current) URL.revokeObjectURL(url);
+    },
+    [],
+  );
+
+  function trackUrl(url: string): string {
+    urlsRef.current.add(url);
+    return url;
+  }
+
+  function releaseUrl(url: string): void {
+    urlsRef.current.delete(url);
+    URL.revokeObjectURL(url);
+  }
+
   async function handleFile(file: File) {
     setError(null);
     setCompressing(true);
     try {
       const blob = await compressPhoto(file);
-      if (draft) URL.revokeObjectURL(draft.url);
-      setDraft({ blob, url: URL.createObjectURL(blob) });
+      if (draft) releaseUrl(draft.url);
+      setDraft({ blob, url: trackUrl(URL.createObjectURL(blob)) });
     } catch {
       setError("Impossible de lire cette photo. Essaie une autre image.");
     } finally {
@@ -57,7 +76,7 @@ export default function TodayView({
   }
 
   function handleRetake() {
-    if (draft) URL.revokeObjectURL(draft.url);
+    if (draft) releaseUrl(draft.url);
     setDraft(null);
     setError(null);
   }
@@ -81,7 +100,7 @@ export default function TodayView({
   }
 
   function handleContinue() {
-    if (saved) URL.revokeObjectURL(saved.url);
+    if (saved) releaseUrl(saved.url);
     setSaved(null);
     setError(null);
   }

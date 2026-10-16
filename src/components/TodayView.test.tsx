@@ -107,6 +107,15 @@ describe('TodayView', () => {
     expect(onSave).not.toHaveBeenCalled();
   });
 
+  it("affiche une erreur si l'enregistrement échoue", async () => {
+    onSave.mockRejectedValueOnce(new Error('stockage indisponible'));
+    const { container } = renderToday();
+    await uploadPhoto(container);
+    await userEvent.click(screen.getByRole('button', { name: /Valider/ }));
+    expect(await screen.findByText(/Impossible d'enregistrer la photo/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Valider/ })).toBeInTheDocument();
+  });
+
   it('affiche la fin du défi', () => {
     renderToday({ challengeComplete: true, completedDays: 3, dayNumber: 4, theme: '' });
     expect(screen.getByText('Défi terminé !')).toBeInTheDocument();
