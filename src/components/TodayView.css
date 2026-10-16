@@ -1,0 +1,99 @@
+.today { padding-top: 20px; }
+
+.today__card {
+  background: var(--card);
+  border: 3px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 26px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  text-align: center;
+}
+
+.today__day {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 0 auto;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary-strong);
+  font-family: 'Fredoka', 'Nunito', sans-serif;
+  font-weight: 500;
+}
+.today__progress {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.today__theme {
+  margin: 0;
+  font-size: 2.2rem;
+  line-height: 1.2;
+  color: var(--fg);
+}
+
+.today__photo {
+  border-radius: 14px;
+  border: 3px solid var(--border);
+  width: 100%;
+  max-height: 60vh;
+  object-fit: contain;
+  background: var(--bg);
+}
+
+.today__note { margin: 0; color: var(--muted); white-space: pre-wrap; }
+
+.today__next {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: var(--mint);
+  color: #2f6e5c;
+  font-weight: 700;
+}
+
+.today__saved-title {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'Fredoka', 'Nunito', sans-serif;
+  font-weight: 600;
+  color: var(--primary-strong);
+  font-size: 1.2rem;
+}
+
+.today__actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.today__error { margin: 0; color: var(--danger); }
+
+.today__capture {
+  width: 132px;
+  height: 132px;
+  margin: 8px auto;
+  border-radius: 999px;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.today--complete {
+  margin-top: 24px;
+  text-align: center;
+  padding: 40px 24px;
+  border: 3px dashed var(--border-deep);
+  border-radius: var(--radius);
+  background: rgb(255 227 143 / 0.25);
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.today--complete h2 { margin: 0; color: var(--primary-strong); }
+.today--complete p { margin: 0; }
