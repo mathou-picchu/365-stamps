@@ -98,6 +98,6 @@ describe('parseImportFile — fichiers invalides', () => {
 
 describe('buildExportFileName', () => {
   it('construit le nom de fichier avec la date du jour', () => {
-    expect(buildExportFileName(new Date('2026-10-16T12:00:00Z'))).toBe('calendar365-export-2026-10-16.json');
+    expect(buildExportFileName(new Date('2026-10-16T12:00:00Z'))).toBe('stamps365-export-2026-10-16.json');
   });
 });

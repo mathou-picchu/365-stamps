@@ -140,5 +140,5 @@ function parseDay(day: unknown, index: number, seen: Set<number>): DayEntry {
 }
 
 export function buildExportFileName(date: Date = new Date()): string {
-  return `calendar365-export-${date.toISOString().slice(0, 10)}.json`;
+  return `stamps365-export-${date.toISOString().slice(0, 10)}.json`;
 }

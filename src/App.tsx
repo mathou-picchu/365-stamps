@@ -115,7 +115,7 @@ export default function App() {
     return (
       <div className="app">
         <div className="error-screen">
-          <h1>365 Calendar</h1>
+          <h1>365 Stamps</h1>
           <h2>Impossible de charger les thèmes</h2>
           <p>{themesError}</p>
           <p>
@@ -140,7 +140,7 @@ export default function App() {
       <header className="app-header">
         <div className="app-brand">
           <Heart size={26} aria-hidden="true" fill="currentColor" />
-          <h1 className="app-title">365 Calendar</h1>
+          <h1 className="app-title">365 Stamps</h1>
         </div>
         <Toolbar onExport={handleExport} onImport={handleImport} />
       </header>

@@ -2,7 +2,7 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import { defineConfig } from 'vitest/config';
 
-const base = '/365-calendar/';
+const base = '/365-stamps/';
 
 export default defineConfig({
   base,
@@ -12,8 +12,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg'],
       manifest: {
-        name: '365 Calendar — Une photo par jour',
-        short_name: '365 Calendar',
+        name: '365 Stamps — Une photo par jour',
+        short_name: '365 Stamps',
         description: 'Un thème par jour, une photo par thème : ton défi photo personnel.',
         theme_color: '#f27e9d',
         background_color: '#fdf3e7',

@@ -1,4 +1,4 @@
-# 365 Calendar — Spécification de design
+# 365 Stamps — Spécification de design
 
 **Date** : 2026-10-16
 **Statut** : Validé par l'utilisateur
@@ -39,7 +39,7 @@ Application web installable (PWA) de défi photo personnel façon flashcards : c
 
 ### 4. Export / Import JSON
 
-- **Export** : télécharge `calendar365-export-YYYY-MM-DD.json` — toutes les entrées, photos converties en base64, format versionné (`"version": 1`).
+- **Export** : télécharge `stamps365-export-YYYY-MM-DD.json` — toutes les entrées, photos converties en base64, format versionné (`"version": 1`).
 - **Import** : sélection du fichier → validation stricte (JSON, version, structure de chaque entrée, en-tête JPEG des photos) → confirmation « Remplacer les X entrées actuelles par les Y entrées du fichier ? » → remplacement complet en transaction atomique (sémantique : remplacer, pas fusionner).
 - Indispensable : vider les données du navigateur efface les photos. Exporter régulièrement.
 
@@ -80,7 +80,7 @@ Univers cozy « maison de poupée » en pastel — l'app étant un album photo d
 
 ## Modèle de données
 
-IndexedDB : base `calendar365`, version 1, store `days` (keyPath `dayNumber`).
+IndexedDB : base `stamps365`, version 1, store `days` (keyPath `dayNumber`).
 
 ```ts
 interface DayPhoto {
@@ -136,7 +136,7 @@ Clone structurel de mymap (stack et patterns prouvés, domaine métier neuf) :
 
 ## Déploiement
 
-1. Repo GitHub `365-calendar`, branche `main`, `vite.config.ts` avec `base: '/365-calendar/'`.
+1. Repo GitHub `365-stamps`, branche `main`, `vite.config.ts` avec `base: '/365-stamps/'`.
 2. Workflow GitHub Actions (copie de mymap) : build Node 24 → `actions/deploy-pages`, déclenché sur push `main` + `workflow_dispatch`.
 3. Pages activé sur la branche `gh-pages` gérée par Actions.
 

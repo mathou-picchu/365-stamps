@@ -1,4 +1,4 @@
-# 365 Calendar — Une photo par jour
+# 365 Stamps — Une photo par jour
 
 Application web installable (PWA) de défi photo personnel : chaque jour un thème, une photo qui s'y lie, une note optionnelle. La progression est sans pression — le thème suivant n'est débloqué que lorsque la photo du thème en cours est prise.
 
@@ -31,7 +31,7 @@ npm run dev
 
 ## Où sont mes données ?
 
-Dans le stockage IndexedDB **de ton navigateur**, base `calendar365`. Elles ne quittent jamais ta machine sauf export explicite.
+Dans le stockage IndexedDB **de ton navigateur**, base `stamps365`. Elles ne quittent jamais ta machine sauf export explicite.
 
 Pour les sauvegarder ou les transférer : bouton **⬇️** (export : télécharge un JSON avec tes photos) puis **⬆️** (import) sur l'autre appareil.
 
@@ -44,7 +44,7 @@ Pour les sauvegarder ou les transférer : bouton **⬇️** (export : téléchar
 
 ## Déploiement (GitHub Pages)
 
-1. Repo GitHub nommé `365-calendar`, branche `main` (le `base` de `vite.config.ts` dépend du nom du repo).
+1. Repo GitHub nommé `365-stamps`, branche `main` (le `base` de `vite.config.ts` dépend du nom du repo).
 2. Le workflow `.github/workflows/deploy.yml` build et publie automatiquement à chaque push sur `main`.
 3. Dans les réglages du repo : Settings → Pages → Source « GitHub Actions ».
 

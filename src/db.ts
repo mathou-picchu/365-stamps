@@ -1,15 +1,15 @@
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
 import type { DayEntry } from './types';
 
-interface CalendarDB extends DBSchema {
+interface StampsDB extends DBSchema {
   days: { key: number; value: DayEntry };
 }
 
-let dbPromise: Promise<IDBPDatabase<CalendarDB>> | null = null;
+let dbPromise: Promise<IDBPDatabase<StampsDB>> | null = null;
 
-function getDB(): Promise<IDBPDatabase<CalendarDB>> {
+function getDB(): Promise<IDBPDatabase<StampsDB>> {
   if (!dbPromise) {
-    dbPromise = openDB<CalendarDB>('calendar365', 1, {
+    dbPromise = openDB<StampsDB>('stamps365', 1, {
       upgrade(db) {
         if (!db.objectStoreNames.contains('days')) {
           db.createObjectStore('days', { keyPath: 'dayNumber' });
