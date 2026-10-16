@@ -57,6 +57,11 @@ describe('DayDetail — consultation', () => {
     renderDetail({ entry: makeDay({ note: undefined }) });
     expect(screen.queryByText('un souvenir')).not.toBeInTheDocument();
   });
+
+  it('affiche la date de prise de vue', () => {
+    renderDetail();
+    expect(screen.getByText(/Pris le/)).toBeInTheDocument();
+  });
 });
 
 describe('DayDetail — édition', () => {
@@ -101,6 +106,17 @@ describe('DayDetail — édition', () => {
     await userEvent.click(screen.getByRole('button', { name: /Enregistrer/ }));
     const [, blob] = onSave.mock.calls[0];
     expect(blob).toBeInstanceOf(Blob);
+  });
+
+  it('affiche une erreur si la compression échoue', async () => {
+    const { compressPhoto } = await import('../photoUtils');
+    vi.mocked(compressPhoto).mockRejectedValueOnce(new Error('illisible'));
+    const { container } = renderDetail();
+    await userEvent.click(screen.getByRole('button', { name: /Modifier/ }));
+    const input = container.querySelector('input[accept="image/*"]') as HTMLInputElement;
+    await userEvent.upload(input, new File(['x'], 'x.jpg', { type: 'image/jpeg' }));
+    expect(await screen.findByText(/Impossible de lire cette photo/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Enregistrer/ })).toBeInTheDocument();
   });
 
   it('affiche une erreur si la sauvegarde échoue', async () => {
