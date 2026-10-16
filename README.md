@@ -5,8 +5,10 @@ Application web installable (PWA) de défi photo personnel : chaque jour un thè
 ## Points clés
 
 - **Tes données restent avec toi** : les photos sont stockées dans ton navigateur (IndexedDB) et ne sont jamais envoyées nulle part. Le projet est partageable, tes photos non.
-- **Un thème par jour** : la liste des thèmes vit dans `public/themes.json` — remplace son contenu par ta propre liste (tableau JSON de chaînes non vides), aucun code à changer. Le nombre de thèmes définit la durée du défi.
-- **Pas de jour raté** : tu avances au thème suivant seulement quand tu as pris la photo du thème en cours.
+- **Pioche du jour** : chaque jour, l'app tire au hasard un thème pas encore photographié dans `public/themes.json` (le paquet de cartes) — remplace son contenu par ta propre liste (tableau JSON de chaînes non vides), aucun code à changer. Le nombre de thèmes définit la durée du défi.
+- **Carte à retourner** : le thème du jour reste masqué derrière une carte ; retourne-la pour le découvrir. Pas envie du thème ? **Changer le thème** repioche (illimité, avant la photo) — le thème écarté reste dans le paquet.
+- **Pas de jour raté** : tu avances au jour suivant seulement quand tu as pris la photo du thème en cours.
+- **Zéro spoiler** : après validation, le prochain thème n'est jamais affiché — il attend sa carte.
 - **Thème figé** : chaque photo garde le thème du moment où elle a été prise ; modifier `themes.json` ne réécrit pas l'histoire.
 - **Export / import JSON** pour sauvegarder ou transférer tes photos sur un autre appareil.
 - Installable sur mobile (PWA), fonctionne hors-ligne.
@@ -31,7 +33,7 @@ npm run dev
 
 ## Où sont mes données ?
 
-Dans le stockage IndexedDB **de ton navigateur**, base `stamps365`. Elles ne quittent jamais ta machine sauf export explicite.
+Dans le stockage IndexedDB **de ton navigateur**, base `stamps365`. Elles ne quittent jamais ta machine sauf export explicite. La pioche du jour (thème tiré non encore validé) est mémorisée dans `localStorage` (clé `stamps365-draw`) pour rester stable durant la journée.
 
 Pour les sauvegarder ou les transférer : bouton **⬇️** (export : télécharge un JSON avec tes photos) puis **⬆️** (import) sur l'autre appareil.
 

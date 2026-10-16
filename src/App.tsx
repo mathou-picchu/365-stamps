@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Camera, Heart, Images } from 'lucide-react';
 import DayDetail from './components/DayDetail';
 import GalleryView from './components/GalleryView';
 import Toolbar from './components/Toolbar';
 import TodayView from './components/TodayView';
+import { drawTheme, loadDailyDraw, remainingThemes, saveDailyDraw } from './dailyTheme';
 import { listDays, nextDayNumber, replaceAllDays, saveDay } from './db';
 import { buildExportFileName, exportDays, ImportError, parseImportFile } from './exportImport';
 import { isChallengeComplete, loadThemes, ThemesError } from './themes';
@@ -12,6 +13,11 @@ import './AppShell.css';
 
 type Tab = 'today' | 'gallery';
 
+interface DailyDraw {
+  dayNumber: number;
+  theme: string;
+}
+
 export default function App() {
   const [themes, setThemes] = useState<string[] | null>(null);
   const [themesError, setThemesError] = useState<string | null>(null);
@@ -19,6 +25,7 @@ export default function App() {
   const [tab, setTab] = useState<Tab>('today');
   const [selectedDayNumber, setSelectedDayNumber] = useState<number | null>(null);
   const [storageError, setStorageError] = useState(false);
+  const [dailyDraw, setDailyDraw] = useState<DailyDraw | null>(null);
 
   useEffect(() => {
     loadThemes()
@@ -47,11 +54,43 @@ export default function App() {
   const completedDays = days.length;
   const challengeComplete = themes !== null && isChallengeComplete(completedDays, themes.length);
   const currentDayNumber = nextDayNumber(days);
-  const currentTheme = themes !== null && !challengeComplete ? themes[completedDays] : '';
+  const usedThemes = useMemo(() => days.map((day) => day.theme), [days]);
+  const remaining = useMemo(
+    () => (themes !== null ? remainingThemes(themes, usedThemes) : []),
+    [themes, usedThemes],
+  );
+  const drawValid =
+    dailyDraw !== null &&
+    dailyDraw.dayNumber === currentDayNumber &&
+    remaining.includes(dailyDraw.theme);
+  const currentTheme =
+    !challengeComplete && dailyDraw !== null && dailyDraw.dayNumber === currentDayNumber
+      ? dailyDraw.theme
+      : '';
+  const canReroll =
+    !challengeComplete && currentTheme !== '' && remaining.some((t) => t !== currentTheme);
   const selectedDay = days.find((day) => day.dayNumber === selectedDayNumber) ?? null;
 
+  useEffect(() => {
+    if (themes === null || challengeComplete || drawValid) return;
+    const stored = loadDailyDraw(currentDayNumber);
+    const theme = stored !== null && remaining.includes(stored) ? stored : drawTheme(remaining);
+    if (theme === null) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- pioche du jour : synchronisation avec localStorage et le paquet restant (systèmes externes à React), le setState a lieu après les lectures
+    setDailyDraw({ dayNumber: currentDayNumber, theme });
+    if (stored !== theme) saveDailyDraw(currentDayNumber, theme);
+  }, [themes, challengeComplete, drawValid, currentDayNumber, remaining]);
+
+  function handleRerollTheme() {
+    if (themes === null || !canReroll) return;
+    const next = drawTheme(remaining, currentTheme);
+    if (next === null) return;
+    setDailyDraw({ dayNumber: currentDayNumber, theme: next });
+    saveDailyDraw(currentDayNumber, next);
+  }
+
   async function handleComplete(photo: Blob, note: string | undefined) {
-    if (themes === null || challengeComplete) {
+    if (themes === null || challengeComplete || currentTheme === '') {
       throw new Error('le défi est terminé');
     }
     const entry: DayEntry = {
@@ -158,7 +197,9 @@ export default function App() {
             completedDays={completedDays}
             themeCount={themes.length}
             challengeComplete={challengeComplete}
+            canReroll={canReroll}
             onSave={handleComplete}
+            onRerollTheme={handleRerollTheme}
             onEditLast={() => {
               if (days[0]) setSelectedDayNumber(days[0].dayNumber);
             }}
