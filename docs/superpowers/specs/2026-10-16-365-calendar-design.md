@@ -50,6 +50,34 @@ Application web installable (PWA) de défi photo personnel façon flashcards : c
 - Installable depuis Chrome/Safari (« Ajouter à l'écran d'accueil »).
 - **Interface en français**.
 
+## Direction artistique (inspirée de Pocket Love, HyperBeard)
+
+Univers cozy « maison de poupée » en pastel — l'app étant un album photo de souvenirs, l'analogie avec l'album de souvenirs de Pocket Love est directe.
+
+**Palette** (crème + bonbon, texte brun cacao — jamais de gris anthracite) :
+
+| Usage | Couleur |
+|---|---|
+| Fond | `#FDF3E7` (crème chaud) |
+| Texte | `#5C4033` (brun cacao) |
+| Texte secondaire | `#A38B78` |
+| Primaire | `#F27E9D` (rose bonbon) · foncé `#E05C80` · profond `#D14A6E` (bords de boutons) |
+| Primaire doux | `#FFE3EC` (badges, fonds actifs) |
+| Accents pastel | menthe `#9ED9C5` (annonces), bleu ciel `#A5D8F3` (dates), beurre `#FFE38F` (célébrations) |
+| Cartes | `#FFFDF9` avec bordure 3 px `#F0D9C8` (profonde `#E3BFA6` pour les ombres de boutons) |
+| Erreur | `#E85D5D` |
+
+**Typographie** : Fredoka (titres, boutons, badges — ronde et joueuse) + Nunito (corps — ronde et lisible), servies via `@fontsource` (pattern mymap).
+
+**Composants** :
+- **Boutons bonbon** : fond plein, coins pilule, bord inférieur épais (`box-shadow: 0 4px 0`) ; `:active` enfonce le bouton (`translateY` + ombre réduite).
+- **Cartes sticker** : fond clair, bordure 3 px, coins 16-24 px, ombre douce.
+- **Fond à pois pastel** discrets (double `radial-gradient` CSS rose/menthe).
+- **Motif cœur** : icône de l'app, progression des jours, badge du titre « Jour N ».
+- Grande pastille ronde pour le bouton photo ; bulles pastel pour les informations (thème suivant = menthe, date = ciel, félicitations = beurre).
+
+**PWA** : `theme_color` rose `#F27E9D`, `background_color` crème `#FDF3E7`, icône = cœur bonbon à contour cacao sur fond crème.
+
 ## Modèle de données
 
 IndexedDB : base `calendar365`, version 1, store `days` (keyPath `dayNumber`).
