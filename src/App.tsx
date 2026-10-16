@@ -33,6 +33,7 @@ export default function App() {
   const refreshDays = useCallback(async () => {
     try {
       setDays(await listDays());
+      setStorageError(false);
     } catch {
       setStorageError(true);
     }
@@ -78,13 +79,17 @@ export default function App() {
   }
 
   async function handleExport() {
-    const json = await exportDays(days);
-    const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = buildExportFileName();
-    a.click();
-    URL.revokeObjectURL(url);
+    try {
+      const json = await exportDays(days);
+      const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = buildExportFileName();
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      window.alert("Export échoué : impossible de préparer le fichier.");
+    }
   }
 
   async function handleImport(file: File) {
@@ -98,11 +103,11 @@ export default function App() {
       await refreshDays();
       setSelectedDayNumber(null);
     } catch (err) {
-      window.alert(
-        err instanceof ImportError
-          ? `Import échoué : ${err.message}`
-          : 'Import échoué : fichier illisible.',
-      );
+      if (err instanceof ImportError) {
+        window.alert(`Import échoué : ${err.message}`);
+      } else {
+        window.alert('Import échoué : stockage indisponible.');
+      }
     }
   }
 
@@ -146,7 +151,7 @@ export default function App() {
         </p>
       )}
       <main className="app-main">
-        {tab === 'today' ? (
+        <div hidden={tab !== 'today'}>
           <TodayView
             dayNumber={currentDayNumber}
             theme={currentTheme}
@@ -158,9 +163,8 @@ export default function App() {
               if (days[0]) setSelectedDayNumber(days[0].dayNumber);
             }}
           />
-        ) : (
-          <GalleryView days={days} onSelect={setSelectedDayNumber} />
-        )}
+        </div>
+        {tab === 'gallery' ? <GalleryView days={days} onSelect={setSelectedDayNumber} /> : null}
       </main>
       <nav className="tabbar" aria-label="Navigation principale">
         <button

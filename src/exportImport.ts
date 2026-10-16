@@ -82,7 +82,14 @@ export function parseImportFile(text: string): DayEntry[] {
     throw new ImportError('liste des jours manquante.');
   }
   const seen = new Set<number>();
-  return file.days.map((day, index) => parseDay(day, index, seen));
+  const entries = file.days.map((day, index) => parseDay(day, index, seen));
+  const sorted = [...seen].sort((a, b) => a - b);
+  for (let i = 0; i < sorted.length; i++) {
+    if (sorted[i] !== i + 1) {
+      throw new ImportError('les numéros de jours doivent former une suite continue à partir de 1.');
+    }
+  }
+  return entries;
 }
 
 function parseDay(day: unknown, index: number, seen: Set<number>): DayEntry {

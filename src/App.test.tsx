@@ -111,7 +111,7 @@ describe('App', () => {
     render(<App />);
     await screen.findByText('Eau');
     const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
-    const file = new File([await exportDays([makeDay(2)])], 'export.json', {
+    const file = new File([await exportDays([makeDay(1), makeDay(2)])], 'export.json', {
       type: 'application/json',
     });
     const input = document.querySelector(
@@ -121,7 +121,10 @@ describe('App', () => {
     expect(confirmSpy).toHaveBeenCalledWith(
       expect.stringMatching(/Remplacer les 1 entrées actuelles/),
     );
-    expect(replaceAllDays).toHaveBeenCalledWith([expect.objectContaining({ dayNumber: 2 })]);
+    expect(replaceAllDays).toHaveBeenCalledWith([
+      expect.objectContaining({ dayNumber: 1 }),
+      expect.objectContaining({ dayNumber: 2 }),
+    ]);
     confirmSpy.mockRestore();
   });
 
@@ -130,7 +133,7 @@ describe('App', () => {
     render(<App />);
     await screen.findByText('Eau');
     const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
-    const file = new File([await exportDays([makeDay(2)])], 'export.json', {
+    const file = new File([await exportDays([makeDay(1), makeDay(2)])], 'export.json', {
       type: 'application/json',
     });
     const input = document.querySelector(
@@ -182,5 +185,18 @@ describe('App', () => {
     createObjectURL.mockRestore();
     revokeObjectURL.mockRestore();
     clickSpy.mockRestore();
+  });
+
+  it('conserve le brouillon lors du changement d’onglet', async () => {
+    render(<App />);
+    expect(await screen.findByText('Rouge')).toBeInTheDocument();
+    const input = document.querySelector('input[accept="image/*"]') as HTMLInputElement;
+    await userEvent.upload(input, new File(['photo'], 'photo.jpg', { type: 'image/jpeg' }));
+    expect(await screen.findByAltText('Aperçu de la photo')).toBeInTheDocument();
+    await userEvent.type(screen.getByLabelText(/Note/), 'Ma note');
+    await userEvent.click(screen.getByRole('button', { name: /Galerie/ }));
+    await userEvent.click(screen.getByRole('button', { name: /Aujourd'hui/ }));
+    expect(screen.getByAltText('Aperçu de la photo')).toBeInTheDocument();
+    expect(screen.getByLabelText(/Note/)).toHaveValue('Ma note');
   });
 });

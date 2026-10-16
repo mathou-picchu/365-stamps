@@ -74,6 +74,18 @@ describe('parseImportFile — fichiers invalides', () => {
     expect(() => parseImportFile(json)).toThrow(ImportError);
   });
 
+  it('rejette des numéros de jours non consécutifs', () => {
+    const json = JSON.stringify({
+      version: 1,
+      exportedAt: 1,
+      days: [
+        { dayNumber: 1, theme: 'Rouge', photo: { id: 'p', data: '/9j/' }, takenAt: 1, updatedAt: 1 },
+        { dayNumber: 3, theme: 'Eau', photo: { id: 'q', data: '/9j/' }, takenAt: 1, updatedAt: 1 },
+      ],
+    });
+    expect(() => parseImportFile(json)).toThrow(ImportError);
+  });
+
   it('rejette une photo illisible (pas un JPEG)', () => {
     const json = JSON.stringify({
       version: 1,
