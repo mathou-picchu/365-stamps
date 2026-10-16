@@ -15,9 +15,9 @@ export function validateThemes(value: unknown): string[] {
 export async function loadThemes(): Promise<string[]> {
   let response: Response;
   try {
-    response = (await fetch('themes.json')) as Response;
-  } catch {
-    throw new ThemesError('impossible de charger themes.json (réseau).');
+    response = await fetch('themes.json');
+  } catch (err) {
+    throw new ThemesError('impossible de charger themes.json (réseau).', { cause: err });
   }
   if (!response.ok) {
     throw new ThemesError(`themes.json introuvable (HTTP ${String(response.status)}).`);
@@ -25,8 +25,8 @@ export async function loadThemes(): Promise<string[]> {
   let parsed: unknown;
   try {
     parsed = await response.json();
-  } catch {
-    throw new ThemesError("themes.json n'est pas un JSON valide.");
+  } catch (err) {
+    throw new ThemesError("themes.json n'est pas un JSON valide.", { cause: err });
   }
   return validateThemes(parsed);
 }

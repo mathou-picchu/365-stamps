@@ -33,8 +33,10 @@ describe('validateThemes', () => {
 
 describe('loadThemes', () => {
   it('charge et valide themes.json', async () => {
-    vi.stubGlobal('fetch', vi.fn(async () => ({ ok: true, json: async () => ['Rouge', 'Eau'] })));
+    const fetchSpy = vi.fn(async () => ({ ok: true, json: async () => ['Rouge', 'Eau'] }));
+    vi.stubGlobal('fetch', fetchSpy);
     await expect(loadThemes()).resolves.toEqual(['Rouge', 'Eau']);
+    expect(fetchSpy).toHaveBeenCalledWith('themes.json');
   });
 
   it('échoue si le fichier est introuvable', async () => {
