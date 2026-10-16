@@ -91,11 +91,13 @@ export default function DayDetail({ entry, isLast, onSave, onClose }: DayDetailP
 
       {editing ? (
         <>
-          <img
-            className="detail__photo"
-            src={displayedUrl ?? ''}
-            alt={`Photo du thème « ${entry.theme} »`}
-          />
+          {displayedUrl && (
+            <img
+              className="detail__photo"
+              src={displayedUrl}
+              alt={`Photo du thème « ${entry.theme} »`}
+            />
+          )}
           <label className="field">
             Note (optionnel)
             <textarea
@@ -149,11 +151,13 @@ export default function DayDetail({ entry, isLast, onSave, onClose }: DayDetailP
         </>
       ) : (
         <>
-          <img
-            className="detail__photo"
-            src={currentUrl ?? ''}
-            alt={`Photo du thème « ${entry.theme} »`}
-          />
+          {currentUrl && (
+            <img
+              className="detail__photo"
+              src={currentUrl}
+              alt={`Photo du thème « ${entry.theme} »`}
+            />
+          )}
           {entry.note && <p className="detail__note">{entry.note}</p>}
           {error && (
             <p className="detail__error" role="alert">
