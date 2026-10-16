@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import App from './App';
@@ -139,5 +139,48 @@ describe('App', () => {
     await userEvent.upload(input, file);
     expect(replaceAllDays).not.toHaveBeenCalled();
     confirmSpy.mockRestore();
+  });
+
+  it("préserve l'identifiant de la photo quand la note seule est modifiée", async () => {
+    stored = [makeDay(1)];
+    render(<App />);
+    await userEvent.click(await screen.findByRole('button', { name: /Galerie/ }));
+    await userEvent.click(await screen.findByRole('button', { name: /Jour 1/ }));
+    await userEvent.click(await screen.findByRole('button', { name: /Modifier/ }));
+    const noteField = screen.getByLabelText(/Note/);
+    await userEvent.type(noteField, 'Nouvelle note');
+    await userEvent.click(screen.getByRole('button', { name: /Enregistrer/ }));
+    expect(saveDay).toHaveBeenCalledWith(
+      expect.objectContaining({
+        dayNumber: 1,
+        note: 'Nouvelle note',
+        photo: { id: 'ph-1', blob: expect.any(Blob) },
+      }),
+    );
+  });
+
+  it('ouvre le détail du dernier jour depuis le panneau de succès', async () => {
+    render(<App />);
+    expect(await screen.findByText('Rouge')).toBeInTheDocument();
+    const input = document.querySelector('input[accept="image/*"]') as HTMLInputElement;
+    await userEvent.upload(input, new File(['photo'], 'photo.jpg', { type: 'image/jpeg' }));
+    await userEvent.click(screen.getByRole('button', { name: /Valider/ }));
+    await userEvent.click(await screen.findByRole('button', { name: /Modifier/ }));
+    expect(await screen.findByRole('dialog', { name: 'Détail du jour 1' })).toBeInTheDocument();
+  });
+
+  it('exporte les jours dans un fichier téléchargeable', async () => {
+    stored = [makeDay(1)];
+    const createObjectURL = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:export');
+    const revokeObjectURL = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+    const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+    render(<App />);
+    await userEvent.click(await screen.findByRole('button', { name: /Exporter/ }));
+    await waitFor(() => expect(createObjectURL).toHaveBeenCalledTimes(1));
+    expect(clickSpy).toHaveBeenCalledTimes(1);
+    expect(revokeObjectURL).toHaveBeenCalledWith('blob:export');
+    createObjectURL.mockRestore();
+    revokeObjectURL.mockRestore();
+    clickSpy.mockRestore();
   });
 });
