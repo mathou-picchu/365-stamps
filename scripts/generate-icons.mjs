@@ -34,12 +34,14 @@ function chunk(type, data) {
   return Buffer.concat([len, body, crc]);
 }
 
-function makePng(size) {
+function makePng(size, rFactor) {
   // Cœur bonbon (rose, contour cacao) sur fond crème
   // Équation implicite du cœur : (u² + v² − 1)³ − u²·v³ ≤ 0 (v vers le haut)
+  // rFactor 0.3 pour l'icône standard ; 0.26 pour la maskable (contenu dans le
+  // cercle de sûreté de rayon 0.4 exigé par la spec maskable)
   const cx = size / 2;
   const cy = size * 0.47;
-  const r = size * 0.3;
+  const r = size * rFactor;
   const bg = [253, 243, 231];
   const fg = [242, 126, 157];
   const outline = [209, 74, 110];
@@ -79,7 +81,7 @@ function makePng(size) {
 
 mkdirSync(outDir, { recursive: true });
 for (const size of [192, 512]) {
-  writeFileSync(join(outDir, `icon-${size}.png`), makePng(size));
-  writeFileSync(join(outDir, `icon-${size}-maskable.png`), makePng(size));
+  writeFileSync(join(outDir, `icon-${size}.png`), makePng(size, 0.3));
+  writeFileSync(join(outDir, `icon-${size}-maskable.png`), makePng(size, 0.26));
   console.log(`icon-${size}.png et icon-${size}-maskable.png générés`);
 }
